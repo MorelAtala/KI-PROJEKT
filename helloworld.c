@@ -22,15 +22,25 @@ void turn();
 void turnx();
 void stop();
 void umdrehen();
+void umdrehen1();
 
 //Hauptprogrammroutine
 unsigned char i = 0;
-//unsigned char Plan[] = "RLGLRGRLGLLG.";
-unsigned char Plan[] = "GRGTGG.";
+unsigned char j = 0;
+unsigned char Plan[] = "GLGTGGGRLGLGRGRLGGGTGGGRLGLRGRLLGLRGRLGGGT.";
+//unsigned char Plan[] = "RLGGGGGLRGRLLGGGGGLRGRT.";
 unsigned char wert_links = 0, wert_recht = 0, wert_mitte = 0;
+
 
 void AksenMain(void)
 {
+	lcd_cls();
+	lcd_puts("Wert: ");
+	lcd_ubyte(analog(8));
+	while (analog(8) > 100){
+
+	}
+
 	while (1) {
 
 		weg();
@@ -42,6 +52,7 @@ void AksenMain(void)
 	}
 
 }
+
 
 
 void weg()
@@ -56,10 +67,10 @@ void weg()
 
 
 
-	while (i < 10)
+	while (i < 45)
 	{
-		
-		
+
+
 
 		if (wert_links > 100 && wert_recht > 100 && wert_mitte > 100)
 		{
@@ -97,13 +108,18 @@ void weg()
 		else
 
 		{
-		
-			
+
+
 			while (digital_in(0) == 0)
 			{
-				
-				//sleep(1000);
-				umdrehen();
+				j++;
+				if (j == 2){
+					umdrehen1();
+				}
+				else{
+					//sleep(1000);
+					umdrehen();
+				}
 
 			}
 			folgelinie();
@@ -184,8 +200,8 @@ void geradeaus()
 
 	motor_richtung(3, 0);
 	motor_richtung(1, 0);
-	motor_pwm(3, 9);
-	motor_pwm(1, 9);
+	motor_pwm(3, 5);
+	motor_pwm(1, 5);
 	sleep(1000);
 	while (wert_mitte > 100)
 	{
@@ -210,8 +226,8 @@ void folgelinie()
 	{
 		motor_richtung(3, 0);
 		motor_richtung(1, 0);
-		motor_pwm(3,7);
-		motor_pwm(1,7);
+		motor_pwm(3, 7);
+		motor_pwm(1, 7);
 	}
 
 	else if (wert_links>100 && wert_recht<100 && wert_mitte < 100)
@@ -256,8 +272,8 @@ void turn()
 	wert_mitte = analog(2);
 
 
-	motor_richtung(3, 1);
-	motor_richtung(1, 0);
+	motor_richtung(3, 0);
+	motor_richtung(1, 1);
 	motor_pwm(3, 10);
 	motor_pwm(1, 10);
 	sleep(1000);
@@ -266,8 +282,8 @@ void turn()
 		wert_mitte = analog(2);
 
 	}
-	motor_richtung(3, 1);
-	motor_richtung(1, 0);
+	motor_richtung(3, 0);
+	motor_richtung(1, 1);
 	motor_pwm(3, 10);
 	motor_pwm(1, 10);
 
@@ -285,7 +301,7 @@ void turnx()
 	motor_richtung(1, 0);
 	motor_pwm(3, 0);
 	motor_pwm(1, 0);
-	sleep(5000);
+	sleep(2000);
 	folgelinie;
 
 }
@@ -317,8 +333,30 @@ void abliefern()
 }
 
 
-
+//Links oder Recht 90°
 void umdrehen()
+
+{
+	motor_richtung(2, 0);
+	motor_pwm(2, 3);
+	sleep(1000);
+	motor_pwm(2, 0);
+	motor_richtung(1, 1);
+	motor_richtung(3, 1);
+	motor_pwm(1, 5);
+	motor_pwm(3, 5);
+	sleep(500);
+	motor_richtung(2, 1);
+	motor_pwm(2, 6);
+	sleep(500);
+	motor_pwm(2, 0);
+	turn();
+
+
+}
+
+//gerade 180°
+void umdrehen1()
 
 {
 	motor_richtung(2, 0);
@@ -331,11 +369,10 @@ void umdrehen()
 	motor_pwm(3, 5);
 	sleep(1000);
 	motor_richtung(2, 1);
-	motor_pwm(2, 4);
+	motor_pwm(2, 6);
 	sleep(500);
 	motor_pwm(2, 0);
 	turn();
-	
-	
-}
 
+
+}
