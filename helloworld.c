@@ -265,7 +265,7 @@ void stop()
 }
 
 
-void turn()
+void turn() 180°
 {
 	wert_recht = analog(0);
 	wert_links = analog(7);
@@ -290,7 +290,7 @@ void turn()
 	folgelinie();
 
 }
-void turnx()
+void turnx() // 270°
 {
 	motor_richtung(3, 1);
 	motor_richtung(1, 1);
@@ -306,7 +306,7 @@ void turnx()
 
 }
 
-void abliefern()
+void abliefern()// nutzlos
 
 {
 	/*wert_recht = analog(0);
