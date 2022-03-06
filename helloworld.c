@@ -11,6 +11,7 @@
 //Unbedingt einbinden!
 #include <stub.h>
 
+//Prototypen
 void folgelinie();
 void rechts();
 void links();
@@ -25,20 +26,22 @@ void umdrehen();
 void umdrehen1();
 
 //Hauptprogrammroutine
-unsigned char i = 0;
-unsigned char j = 0;
-unsigned char Plan[] = "GLGTGGGRLGLGRGRLGGGTGGGRLGLRGRLLGLRGRLGGGT.";
+unsigned char i = 0;// counter
+unsigned char j = 0;// counter
+unsigned char Plan[] = "GLGTGGGRLGLGRGRLGGGTGGGRLGLRGRLLGLRGRLGGGT."; // weg für die Zulieferung der Pizzen einer Karte
 //unsigned char Plan[] = "RLGGGGGLRGRLLGGGGGLRGRT.";
-unsigned char wert_links = 0, wert_recht = 0, wert_mitte = 0;
+unsigned char wert_links = 0, wert_recht = 0, wert_mitte = 0; // werte der Sensoren
 
 
 void AksenMain(void)
 {
+
+/* Vor der Abfahrt muss das Licht eingeschaltet werden dann wenn ok, wird die funktion weg abgerufen*/
 	lcd_cls();
 	lcd_puts("Wert: ");
 	lcd_ubyte(analog(8));
 	while (analog(8) > 100){
-
+								
 	}
 
 	while (1) {
@@ -64,7 +67,14 @@ void weg()
 	wert_links = analog(7);
 	wert_mitte = analog(2);
 
+	/*
 
+	Bei der einer Kreuzung , kontrolliert man Plan[i] . Um zu wissen was zu tun ist. 
+	und am Ende i++ und so weiter so wird für G R L den Weg verfolgt. 
+	Und für T dreht der Roboter um.
+	Nach der Lieferung der Pizza oder für die nächste Lieferung am Startpunkt.
+
+	*/
 
 
 	while (i < 45)
@@ -90,8 +100,11 @@ void weg()
 				geradeaus();
 				i++;
 			}
-			else if (Plan[i] == 'T')
-			{
+			else if (Plan[i] == 'T') /* wenn der Roboter angekommen ist.
+			erstmals umdrehen 90rad und dann noch mal umdrehen um 180 grad 
+			schaffen zu können um die nächste Lieferung vorbereiten zu können.
+			
+			*/ {
 				turn();
 				sleep(700);
 				turnx();
@@ -109,7 +122,14 @@ void weg()
 
 		{
 
+		/*
+		wenn der Taster gedrückt wird j++ . Bei manchen Karten gibts Lieferorte
+		wo unsere Roboter sich nicht sehr gut 
+		umdrehen kann um die nächste richtige Kreuzung zu erkennen 
+		und die Linie weiter richtig  verfolgen un den Plan schaffen zu können.
 
+		Bei diesen Lieferorte : wird eine speziale Funktion umdrehen1() abgerufen. 
+		*/
 			while (digital_in(0) == 0)
 			{
 				j++;
@@ -122,7 +142,7 @@ void weg()
 				}
 
 			}
-			folgelinie();
+			folgelinie(); // immer wenn nichts linie folgen
 		}
 
 
@@ -141,7 +161,7 @@ void weg()
 }
 
 
-void rechts()
+void rechts() // rechts abbiegen
 
 {
 	//unsigned char wert_links = 0, wert_recht = 0, wert_mitte = 0;
@@ -166,7 +186,7 @@ void rechts()
 }
 
 
-void links()
+void links() // links abbiegen
 
 {
 	//unsigned char wert_links = 0, wert_recht = 0, wert_mitte = 0;
@@ -189,7 +209,7 @@ void links()
 
 }
 
-void geradeaus()
+void geradeaus() // geradeaus fahren
 
 {
 	//unsigned char wert_links = 0, wert_recht = 0, wert_mitte = 0;
@@ -214,7 +234,7 @@ void geradeaus()
 
 
 
-void folgelinie()
+void folgelinie() // Linie verfolgen
 
 {
 	//unsigned char wert_links = 0, wert_recht = 0, wert_mitte = 0;
@@ -250,7 +270,7 @@ void folgelinie()
 
 }
 
-void stop()
+void stop() // am Ende Stop
 {
 	//unsigned char wert_links = 0, wert_recht = 0, wert_mitte = 0;
 	wert_recht = analog(0);
@@ -265,7 +285,7 @@ void stop()
 }
 
 
-void turn() 180°
+void turn() // für die Funktion umdrehen() nach dem der Taster gedrückt wird
 {
 	wert_recht = analog(0);
 	wert_links = analog(7);
@@ -290,7 +310,7 @@ void turn() 180°
 	folgelinie();
 
 }
-void turnx() // 270°
+void turnx() // 270° fürs Umdrehen am Startpunkt nachdem die letzte Pizza geliefert wurde und wenn die nächste geladen muss.
 {
 	motor_richtung(3, 1);
 	motor_richtung(1, 1);
@@ -334,7 +354,7 @@ void abliefern()// nutzlos
 
 
 //Links oder Recht 90°
-void umdrehen()
+void umdrehen() // nachdem der Taster gedrückt wird und die Pizza abgelegt wird.
 
 {
 	motor_richtung(2, 0);
@@ -356,7 +376,7 @@ void umdrehen()
 }
 
 //gerade 180°
-void umdrehen1()
+void umdrehen1()// bei machen Karte um die richtige Kreuzung nach dem umdrehen zu erkennen
 
 {
 	motor_richtung(2, 0);
